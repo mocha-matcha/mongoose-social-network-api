@@ -28,8 +28,15 @@ module.exports = {
   async createThought(req, res) {
     try {
         const dbThoughtData = await Thought.create(req.body);
+
+        // const user = await User.findOne({username:req.body.username})
+
+        // user.thoughts.push(dbThoughtData._id);
+
         res.json(dbThoughtData);
-    } catch (err) {
+
+
+    } catch (error) {
         console.log(error);
       res.status(500).json(error);
     }
@@ -98,7 +105,7 @@ async removeReaction(req,res){
         
       const thought = await Thought.findOneAndUpdate(
         {_id:req.params.thoughtId},
-        {$pull:{reactions:{reactionId:req.params.reactionId}}},
+        {$pull:{reactions:{_id:req.params.reactionId}}},
         {runValidators:true,new:true}
         
         
