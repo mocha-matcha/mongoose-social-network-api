@@ -72,12 +72,21 @@ try {
   },
   async addReaction(req,res){
     try {
-        const thought = await Thought.findOne({_id:req.params.thoughtId})
-        const reaction = await reactionSchema.create(req.body);
-        thought.reactions.push(reaction);
-        thought.save(done);
+        const thought = await Thought.findOneAndUpdate(
+          {_id:req.params.thoughtId},
+          {$addToSet:{reactions:req.body}},
+          {runValidators:true,new:true}
+          
+          
+          )
+
+          if (!thought) {
+            return res.status(404).json({ message: 'No thought with this id!' });
+          }
+
+        await thought.save();
         res.json(thought);
-    } catch (err) {
+    } catch (error) {
         console.log(error);
       res.status(500).json(error);
     }
@@ -86,12 +95,23 @@ try {
 },
 async removeReaction(req,res){
     try {
-        const thought = await Thought.findOne({_id:req.params.userId})
-        const reaction = await thought.reactions.find({_id:req.params.reactionId})
-        thought.reactions.pull(reaction);
-        thought.save(done);
+        
+      const thought = await Thought.findOneAndUpdate(
+        {_id:req.params.thoughtId},
+        {$pull:{reactions:{reactionId:req.params.reactionId}}},
+        {runValidators:true,new:true}
+        
+        
+        )
+
+        if (!thought) {
+          return res.status(404).json({ message: 'No thought with this id!' });
+        }
+        await thought.save();
         res.json(thought);
-    } catch (err) {
+
+
+    } catch (error) {
         console.log(error);
       res.status(500).json(error);
     }

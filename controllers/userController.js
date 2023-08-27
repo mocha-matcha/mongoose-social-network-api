@@ -82,10 +82,16 @@ module.exports = {
         try {
             const user = await User.findOne({_id:req.params.userId})
             const friend = await User.findOne({_id:req.params.friendId})
-            user.friends.push(friend);
-            user.save(done);
+            if(!friend)
+            {
+                return res.status(404).json({message:'There was no user found with this given id.'});
+            }
+            // if the friend exists then add just the id.
+
+            user.friends.push(req.params.friendId);
+            await user.save();
             res.json(user);
-        } catch (err) {
+        } catch (error) {
             console.log(error);
           res.status(500).json(error);
         }
@@ -96,10 +102,14 @@ module.exports = {
         try {
             const user = await User.findOne({_id:req.params.userId})
             const friend = await User.findOne({_id:req.params.friendId})
-            user.friends.pull(friend);
-            user.save(done);
+            if(!friend)
+            {
+                return res.status(404).json({message:'There was no user found with this given id.'});
+            }
+            user.friends.pull(req.params.friendId);
+            await user.save();
             res.json(user);
-        } catch (err) {
+        } catch (error) {
             console.log(error);
           res.status(500).json(error);
         }
