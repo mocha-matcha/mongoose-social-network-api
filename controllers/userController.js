@@ -68,9 +68,6 @@ module.exports = {
                 
             }
     
-            await User.deleteMany({_id:{$in:user.friends}});
-            await User.deleteMany({_id:{$in:user.thoughts}});
-    
             res.json({message: 'User was deleted!'}) ;
             
         } catch (error) {

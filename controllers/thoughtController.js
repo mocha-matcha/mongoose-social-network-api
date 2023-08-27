@@ -62,8 +62,6 @@ try {
             
         }
 
-        await User.deleteMany({_id:{$in:user.thoughts}});
-
         res.json({message: 'Thought was deleted!'}) ;
         
     } catch (error) {
